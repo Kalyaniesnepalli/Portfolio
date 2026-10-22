@@ -100,41 +100,85 @@ function Header({ onContact }) {
   );
 }
 
+
+
 function WaveBackground() {
+  const [mounted, setMounted] = useState(false);
+  const [pointer, setPointer] = useState({ x: 600, y: 210 });
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  function handlePointerMove(event) {
+    const rect = event.currentTarget.getBoundingClientRect();
+
+    setPointer({
+      x: ((event.clientX - rect.left) / rect.width) * 1200,
+      y: ((event.clientY - rect.top) / rect.height) * 420,
+    });
+  }
+
   const lines = Array.from({ length: 100 }, (_, i) => i);
 
   return (
-    <div className="wave-background" aria-hidden="true">
+    <div
+      ref={containerRef}
+      className="wave-background"
+      aria-hidden="true"
+      onPointerMove={handlePointerMove}
+    >
       <svg
         viewBox="0 0 1200 420"
         preserveAspectRatio="none"
         className="wave-svg"
       >
-        {lines.map((i) => {
-          const x = i * 12.2;
-          const points = Array.from({ length: 50 }, (_, j) => {
-            const y = j * 9;
-            const wave =
-              Math.sin(j * 0.19 + i * 0.055) * 19 +
-              Math.sin(j * 0.07 - i * 0.09) * 13;
-            return `${x + wave},${y}`;
-          }).join(" ");
+        {mounted &&
+          lines.map((i) => {
+            const x = i * 12.2;
 
-          return (
-            <polyline
-              key={i}
-              points={points}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.1"
-            />
-          );
-        })}
+            const points = Array.from({ length: 50 }, (_, j) => {
+              const y = j * 9;
+
+              const dx = x - pointer.x;
+              const dy = y - pointer.y;
+              const distance = Math.sqrt(dx * dx + dy * dy);
+              const influence = Math.max(0, 1 - distance / 260);
+
+              const baseWave =
+                Math.sin(j * 0.19 + i * 0.055) * 19 +
+                Math.sin(j * 0.07 - i * 0.09) * 13;
+
+              const cursorWave =
+                Math.sin(distance * 0.035) * influence * 65;
+
+              return `${x + baseWave + cursorWave},${y}`;
+            }).join(" ");
+
+            return (
+              <polyline
+                key={i}
+                points={points}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.1"
+              />
+            );
+          })}
       </svg>
-      <span className="wave-dot" />
+
+      <span
+        className="wave-dot"
+        style={{
+          left: `${(pointer.x / 1200) * 100}%`,
+          top: `${(pointer.y / 420) * 100}%`,
+        }}
+      />
     </div>
   );
 }
+
 
 function Ticker({ reverse = false }) {
   return (
