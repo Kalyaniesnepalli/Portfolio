@@ -59,10 +59,10 @@ function Header({ onContact }) {
   return (
     <header className="header">
       <a href="#home" className="logo" aria-label="Home">
-        <span className="logo-mark">✳A</span>
+        <span className="logo-mark">✳K</span>
       </a>
 
-      <a href="#home" className="brand">ARYAN</a>
+      <a href="#home" className="brand">Kalyani</a>
 
       <nav className="navigation">
         <a href="#home">KNOW ME</a>
@@ -449,12 +449,12 @@ export default function Home() {
       <InteractiveGrid />
 
       <footer className="footer">
-        <a href="#home" className="footer-name">Aryan</a>
+        <a href="#home" className="footer-name">Kalyani</a>
         <div className="footer-links">
           <a href="#terms">TERMS</a>
           <a href="#privacy">PRIVACY</a>
           <button onClick={() => setContactOpen(true)}>
-            ARYAN@OGXSTUDIO.IN
+            Kalyani@OGXSTUDIO.IN
           </button>
         </div>
       </footer>
